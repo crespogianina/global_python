@@ -22,7 +22,6 @@ class Detector:
                 return True
         return False
 
-
     def _detectar_diagonal(self):
         diagonales = self._obtener_diagonales()
         for diagonal in diagonales:
@@ -36,7 +35,6 @@ class Detector:
                 return True
         return False
         
-        # NO BORRAR
     def _obtener_diagonales(self):
         diagonales = []
         n = len(self.matriz)
@@ -49,6 +47,7 @@ class Detector:
                     diagonal += self.matriz[i + k][k]
                     if len(diagonal) > 3:
                         diagonales.append(diagonal)
+                        
         # Diagonales descendentes desde la fila superior derecha (excluyendo la primera fila)
         for i in range(1, n):
             diagonal = ''
@@ -57,7 +56,7 @@ class Detector:
                 if len(diagonal) > 3:
                     diagonales.append(diagonal)
                 
-    # Diagonales descendentes desde la columna derecha
+        # Diagonales descendentes desde la columna derecha
         for i in range(n):
             diagonal = ''
             for k in range(n - i):
@@ -80,64 +79,87 @@ class Detector:
                         pass
                     else: 
                         diagonales.append(diagonal)
-
-        print(f"Diagonales: {diagonales}" )
         return diagonales
-      
 
-    
-matriz = [
-    "A G A T C A", 
-    "G A T T C A", 
-    "C A A C A T", 
-    "G A G C T A", 
-    "A T T G C G", 
-    "C T G T T C"
-    ]
-
-
-# #_---------------------------------------------------------------------------------------------------------------
+#fin clase detector 
+# #---------------------------------------------------------------------------------------------------------------
 # # #clase mutador
-# # class Mutador:
-# #     base_nitrogenada = ''
-# #      atributos+= ''
+class Mutador:
+    base_nitrogenada = '' #ACGT
 
-# #     def __init__(self, base_nitrogenada):
-# #         this.base_nitrogenada = base_nitrogenada
+    nombre = ''
+    nombre2 = ''
+
+    def __init__(self, base_nitrogenada, nombre, nombre2):
+        self.base_nitrogenada = base_nitrogenada
+        self.nombre = nombre #Radiacion o virus
+        self.nombre2 = nombre2
     
-# #     def crear_mutante(self, mutante):
-# #         return
+    def crear_mutante(self, mutante):
+        pass
 
 # #clase radiacion
-# class Radiacion(Mutador):
-#     #mutantes horizontales y verticales
-#     atributobasenitrogenada = ''
-#     atributos2 = ''
-#     def __init__(self): 
-#         return
-    
-#     def crear_mutante(base_nitrogenada, posicion_inicial, orientacion_mutacion):
-#         # manejo de errores
-    
-# #clase virus
-# class Virus(Mutador):
-#     #solo mutantes diagonales
-#     atributobasenitrogenada = ''
-#     atributos2 = ''
-#     def __init__(self): 
-#         return
-    
-#     def crear_mutante(base_nitrogenada, posicion_inicial, orientacion_mutacion):
-#         # manejo de errores
+class Radiacion(Mutador):
 
-# #clase sanador
-# class Sanador:
-#     atributos2 = ''
-#     def __init__(self): 
-#         return
+    def __init__(self, base_nitrogenada): 
+        super().__init__(base_nitrogenada, nombre='Radiacion')
+        self.orientacion_mutacion = None
     
-#     def sanar_mutantes():
-#         return
+    def crear_mutante(self, matriz, base_nitrogenada, posicion_inicial, orientacion_mutacion):
+        #mutantes horizontales y verticales
+        try:
+            x,y = posicion_inicial
+            if orientacion_mutacion == "H":
+                for i in range(4):
+                    matriz[x][y + i] =  base_nitrogenada
+            elif orientacion_mutacion == "V":
+                for i in range(4):
+                    matriz[x + i][y] = base_nitrogenada
+            return matriz
+        except Exception as e:
+            print(f"Error al crear mutante: {e}") 
+            return None
 
+    
+# #clase virus hija de mutador
+class Virus(Mutador):
+    
+    #solo mutantes diagonales
+    def __init__(self, base_nitrogenada): 
+        super().__init__(base_nitrogenada,nombre='Virus')
+        #falta atributo
+    
+    def crear_mutante(base_nitrogenada, posicion_inicial):
+        try:
+            x, y = posicion_inicial
+            for i in range(4):
+                 matriz[x + i][y + i] = self.base_nitrogenada 
+                 return matriz
+        except Exception as e: 
+            print(f"Error al crear mutante: {e}") 
+            return None
 
+ #clase sanador
+import random
 
+class Sanador:
+    def __init__(self, detector):
+        self.detector = detector
+        self.nueva_matriz = None
+
+    def sanar_mutantes(self, matriz):
+        # Verificar si hay mutaciones en la matriz
+        if self.detector.detectar_mutantes(matriz):
+            print("Se detectaron mutaciones. Sanando...")
+            bases = ['A', 'T', 'C', 'G']
+            # Generar una nueva matriz sin mutaciones
+            nueva_matriz = [''.join(random.choice(bases) for _ in range(6)) for _ in range(6)]
+            while self.detector.detectar_mutantes(nueva_matriz):
+                nueva_matriz = [''.join(random.choice(bases) for _ in range(6)) for _ in range(6)]
+            print("Mutaciones eliminadas. Nueva matriz de ADN generada:")
+            for fila in nueva_matriz:
+                print(fila)
+            return nueva_matriz
+        else:
+            print("No se detectaron mutaciones. No es necesario sanar.")
+            return matriz
