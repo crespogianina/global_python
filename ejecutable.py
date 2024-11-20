@@ -1,13 +1,18 @@
-# from clases import Detector, Radiacion, Virus, Sanador
+from clases import Detector
 
 def main():
-    matriz = ["AGATCA", "GATTCA", "CAACAT", "GAGCTA", "ATTGCG", "CTGTTC"]
-    # detector = Detector()
+        matriz = ["AGATCA", "GATTCA", "CAACAT", "GAGCTA", "ATTGCG", "CTGTTC"]
+    # mutante_horizontal = ["TTTTCA", "GATTCA", "CAACAT", "GAGCTA", "ATTGCG", "CTGTTC"]
+    # mutante_vertical = ["AGATCA", "GATTCA", "CAATAT", "GAGTTA", "ATTGCG", "CTGTTC"]7
+    # mutante_vertical = ["TGATCA", "GTTTCA", "CATCAT", "GAGTTA", "ATTGCG", "CTGTTC"]
+        detector = Detector()
 
-    print("ADN Inicial: ")
-    for fila in matriz:
-        print(fila)
-    menu()
+        detector.detectar_mutantes(matriz)
+
+        print("ADN Inicial: ")
+        for fila in matriz:
+            print(fila)
+            menu()
 
 def menu():
     print("Menu: ")
