@@ -85,15 +85,12 @@ class Detector:
 # #---------------------------------------------------------------------------------------------------------------
 # # #clase mutador
 class Mutador:
-    base_nitrogenada = '' #ACGT
 
-    nombre = ''
-    nombre2 = ''
-
-    def __init__(self, base_nitrogenada, nombre, nombre2):
+    def __init__(self, base_nitrogenada, nombre):
         self.base_nitrogenada = base_nitrogenada
-        self.nombre = nombre #Radiacion o virus
-        self.nombre2 = nombre2
+        self.nombre = nombre 
+        self.matriz = None
+        # self.clase = clase 
     
     def crear_mutante(self, mutante):
         pass
@@ -123,21 +120,34 @@ class Radiacion(Mutador):
     
 # #clase virus hija de mutador
 class Virus(Mutador):
-    
-    #solo mutantes diagonales
-    def __init__(self, base_nitrogenada): 
-        super().__init__(base_nitrogenada,nombre='Virus')
-        #falta atributo
-    
-    def crear_mutante(base_nitrogenada, posicion_inicial):
+    def __init__(self, nombre, base_nitrogenada):
+        super().__init__(base_nitrogenada, nombre)
+        self.matriz = None
+
+    def crear_mutante(self, matriz, base_nitrogenada, posicion_inicial):
         try:
+            self.matriz = [list(fila) for fila in matriz]  
+
+            if not self._validar_posicion(posicion_inicial):
+                print(f"Posición inicial inválida: {posicion_inicial}")
+                return None
+
             x, y = posicion_inicial
             for i in range(4):
-                 matriz[x + i][y + i] = self.base_nitrogenada 
-                 return matriz
-        except Exception as e: 
-            print(f"Error al crear mutante: {e}") 
+                self.matriz[x + i][y + i] = base_nitrogenada
+            self.matriz = [''.join(fila) for fila in self.matriz]  
+            return self.matriz
+        except Exception as e:
+            print(f"Error al crear mutante: {e}")
             return None
+
+    def _validar_posicion(self, posicion_inicial):
+        x, y = posicion_inicial
+        n = len(self.matriz)
+        if x < 0 or y < 0 or x + 3 >= n or y + 3 >= n:
+            return False
+        return True
+
 
  #clase sanador
 import random
