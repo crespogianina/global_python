@@ -20,7 +20,7 @@ PARTICIPANTES:
 
                                                |INSTALACION|
 
--Clona este repositorio en tu maquina local (git clone)
+-Clona este repositorio en tu maquina local (git clone https://github.com/crespogianina/global_python.git )
 -Navega al directorio del proyecto (cd tu_repositorio)
 
 ---

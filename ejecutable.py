@@ -2,20 +2,20 @@ from clases import Detector, Virus, Radiacion, Sanador
 import os
 from typing import List, Tuple
 
-# Matriz global que almacena el ADN ingresado por el usuario
 matriz: List[List[str]] = []
 
 def main() -> None:
     """
-    Función principal que inicia el programa y muestra el menú pyal usuario.
+    Función principal que inicia el programa y muestra el menú al usuario.
     """
     menu()
 
 def menu() -> None:
     """
-    Muestra el menú principal al usuario y maneja las opciones seleccionadas.
+    Es el menú que se despliega, el cual permite al usuario interactuar con el programa.
     """
     global matriz
+    
     print("\033[[94m" + "Ingrese un ADN inicial")
     matriz = ingresar_nueva_matriz()
     mostrar_matriz(matriz)
@@ -51,7 +51,9 @@ def detectar_mutaciones_matriz() -> None:
     """
     Detecta si existen mutaciones en la matriz de ADN actual.
     """
+    
     print("\033[94m" + "Vamos a detectar mutaciones...")
+
     detector = Detector(matriz)
     mutaciones_detectadas = detector.detectar_mutantes(matriz)
 
@@ -84,21 +86,25 @@ def generar_virus(matriz) -> List[List[str]]:
     """
     Solicita al usuario los datos para generar un Virus y lo aplica en la matriz de ADN.
     """
-    print("\033[94m" + "Ingrese el nombre del virus:")
-    nombre = input("\033[97m" + "Nombre: ").capitalize()
-    limpiar_terminal()
-
-    if not nombre:
-        print("\033[94m" + "Debe ingresar un nombre.")
-        return generar_virus()
-
-    print("\033[94m" + "Ingrese la posición inicial (fila, columna):")
-    try:
-        posicion_inicial = tuple(map(int, input("\033[97m" + "Posición inicial: ").split(',')))
+    while True:
+        print("\033[94m" + "Ingrese el nombre del virus:")
+        nombre = input("\033[97m" + "Nombre: ").capitalize()
         limpiar_terminal()
-    except ValueError:
-        print("\033[94m" + "Debe ingresar una posición válida.")
-        return generar_virus()
+
+        if not nombre:
+            print("\033[94m" + "Debe ingresar un nombre.")
+        else:
+            break
+    
+    while True:
+        print("\033[94m" + "Ingrese la posición inicial (fila, columna):")
+        try:
+            posicion_inicial = tuple(map(int, input("\033[97m" + "Posición inicial: ").split(',')))
+            limpiar_terminal()
+            break
+        except ValueError:
+            print("\033[94m" + "Debe ingresar una posición válida.")
+
 
     nuevo_virus = agregar_base_nitrogenada(matriz, posicion_inicial, nombre)
     if nuevo_virus:
@@ -119,43 +125,54 @@ def agregar_base_nitrogenada(matriz: List[List[str]], posicion_inicial: Tuple[in
     Returns:
         List[List[str]]: Matriz de ADN actualizada con el Virus.
     """
-    print("\033[94m" + "Ingrese la base nitrogenada que desee:")
-    print("\033[94m" + "| A | C | G | T |")
-    base = input("\033[97m" + "Ingrese la opción: ").upper()
-    limpiar_terminal()
+    while True:
+        print("\033[94m" + "Ingrese la base nitrogenada que desee:")
+        print("\033[94m" + "| A | C | G | T |")
+        base = input("\033[97m" + "Ingrese la opción: ").upper()
+        limpiar_terminal()
 
-    if base in ["A", "C", "G", "T"]:
-        virus = Virus(base, nombre, matriz)
-        return virus.crear_mutante(matriz, base, posicion_inicial)
-    else:
-        print("\033[94m" + "Ingrese una base nitrogenada válida.")
-        return agregar_base_nitrogenada(matriz, posicion_inicial, nombre)
+        if base in ["A", "C", "G", "T"]:
+            virus = Virus(base, nombre, matriz)
+            return virus.crear_mutante(matriz, base, posicion_inicial)
+        else:
+            print("\033[94m" + "Ingrese una base nitrogenada válida.")
 
 def generar_radiacion(matriz) -> List[List[str]]:
     """
     Solicita al usuario los datos para generar una Radiación y la aplica en la matriz de ADN.
     """
-    nombre = input("\033[94m" + "Ingrese el nombre de la radiación: ").capitalize()
-    if not nombre:
-        print("\033[94m" + "Debe ingresar un nombre para la radiación.")
-        return generar_radiacion()
+    while True:
+        nombre = input("\033[94m" + "Ingrese el nombre de la radiación: ").capitalize()
+        limpiar_terminal()
+        if not nombre:
+            print("\033[94m" + "Debe ingresar un nombre para la radiación.")
+        else:
+            break
+        
+    while True:
+        orientacion = input("\033[94m" + "Ingrese la orientación (H: Horizontal, V: Vertical): ").upper()
+        limpiar_terminal()
+        if orientacion not in ["H", "V"]:
+            print("\033[94m" + "Debe ingresar una orientación válida.")
+        else:
+            break
 
-    orientacion = input("\033[94m" + "Ingrese la orientación (H: Horizontal, V: Vertical): ").upper()
-    if orientacion not in ["H", "V"]:
-        print("\033[94m" + "Debe ingresar una orientación válida.")
-        return generar_radiacion()
-
-    print("\033[94m" + "Ingrese la posición inicial (fila, columna):")
-    try:
-        posicion_inicial = tuple(map(int, input("\033[97m" + "Posición inicial: ").split(',')))
-    except ValueError:
-        print("\033[94m" + "Debe ingresar una posición válida.")
-        return generar_radiacion()
-
-    base = input("\033[94m" + "Ingrese la base nitrogenada (A, C, G, T): ").upper()
-    if base not in ["A", "C", "G", "T"]:
-        print("\033[94m" + "Debe ingresar una base nitrogenada válida.")
-        return generar_radiacion()
+    while True:
+        print("\033[94m" + "Ingrese la posición inicial (fila, columna):")
+        try:
+            posicion_inicial = tuple(map(int, input("\033[97m" + "Posición inicial: ").split(',')))
+            limpiar_terminal()
+            break
+        except ValueError:
+            print("\033[94m" + "Debe ingresar una posición válida.")
+            
+    while True:
+        base = input("\033[94m" + "Ingrese la base nitrogenada (A, C, G, T): ").upper()
+        limpiar_terminal()
+        if base not in ["A", "C", "G", "T"]:
+            print("\033[94m" + "Debe ingresar una base nitrogenada válida.")
+        else:
+            break
 
     radiacion = Radiacion(base, nombre, matriz)
     nueva_matriz = radiacion.crear_mutante(base, posicion_inicial, orientacion)
@@ -209,8 +226,7 @@ def limpiar_terminal() -> None:
 
 def mostrar_matriz(matriz_adn: List[List[str]]) -> None:
     """
-    Muestra la matriz de ADN en un formato legible.
-
+    Muestra la matriz de ADN en un formato legible para el usuario
     Args:
         matriz_adn (List[List[str]]): Matriz de ADN a mostrar.
     """
