@@ -1,4 +1,4 @@
-from clases import Detector, Virus, Radiacion
+from clases import Detector, Virus, Radiacion, Sanador
 import os
 
 # matriz = ["AGATCA", "GATTCA", "CAACAT", "GAGCTA", "ATTGCG", "CTGTTC"]
@@ -43,9 +43,10 @@ def detectar_mutaciones_matriz():
     detector = Detector()
     mutacionesDetectadas = detector.detectar_mutantes(matriz)
     if mutacionesDetectadas:
-        print("\033[94m"+"Se encontraron mutaciones.")
+        print("\033[94m"+"Se encontraron mutaciones en el ADN.")
+        mostrar_matriz(matriz)
     else:
-        print("\033[94m"+"No se encontraron mutaciones.")
+        print("\033[94m"+"No se encontraron mutaciones en el ADN.")
 
 #GENERAR MUTACIONES
 def generar_mutaciones():
@@ -99,10 +100,9 @@ def agregar_base_nitrogenada(matriz, posicion_inicial, nombre):
     base = input("\033[97m"+"Ingrese la opcion: ").upper()
     
     limpiar_terminal()
-    # generar_virus()
     if(base in ["A", "C", "G", "T"]):
         
-        virus = Virus(base, nombre)
+        virus = Virus(base, nombre, matriz)
         nuevo_virus = virus.crear_mutante(matriz, base, posicion_inicial)
         if nuevo_virus:
             print("Se creo correctamente el virus")
@@ -117,11 +117,86 @@ def agregar_base_nitrogenada(matriz, posicion_inicial, nombre):
         agregar_base_nitrogenada(matriz, posicion_inicial, nombre)
         
 
+def generar_radiacion():
+    while True:
+        print("\033[94m"+"Ingrese el nombre de la radiacion: ") 
+        nombre = input("\033[97m"+"Nombre: ").capitalize() 
+        if len(nombre) <= 0:
+            print("\033[94m"+"Debe ingresar un nombre para la raciacion")
+        else:
+            break
+    
+    while True:
+        print("\033[94m"+"Ingrese la orientacion de la mutacion:") 
+        print("\033[94m"+"Horizontal: H") 
+        print("\033[94m"+"Vertical: V") 
+        orientacion = input("\033[97m"+"Ingrese la opcion: ").upper()
+
+        if orientacion != "H" and orientacion != "V":
+            print("\033[94m"+"Debe ingresar una opcion valida") 
+        else: 
+            break
+    
+    print("\033[94m"+"Ingrese la posicion inicial (fila, columna):") 
+    posicion_inicial = tuple(map(int, input("\033[97m"+"Posicion inicial: ").split(','))) 
+    limpiar_terminal()
+
+    while True:
+        print("\033[94m"+"Ingrese la base nitrogenada que desee") 
+        print("\033[94m"+"| A | C | G | T |") 
+        base = input("\033[97m"+"Ingrese la opcion: ").upper()
+
+        if(base in ["A", "C", "G", "T"]):
+
+            print(nombre,base)
+            radiacion = Radiacion(base, nombre, matriz)
+            nueva_radiacion = radiacion.crear_mutante(radiacion, base, posicion_inicial, orientacion)
+            print(nueva_radiacion)
+            break
+        else:
+            print("Debe ingresar una opcion valida")
+    
 
 
 def sanar_mutaciones():
     print("\033[94m"+"Vamos a sanar el ADN.")
+    adn_mutado = Sanador(matriz)
     
+    
+    while True:
+        print("\033[94m"+"El AND es:")
+        mostrar_matriz(matriz)
+        print("\033[94m"+"Desea ingresar otro?")
+        print("\033[94m"+"Si o No")
+        nuevo = input("\033[97m"+"Ingrese la opcion: ").lower()
+        if nuevo == 'no':
+            adn_detector = Detector()
+            adn_mutado = Sanador(adn_detector)
+
+            adn_sano = adn_mutado.sanar_mutantes(matriz)
+            print(adn_sano)
+        elif nuevo == "si":
+            print("\033[94m"+"Ingrese el nuevo ADN: ")
+            nueva_matriz = ingresar_nueva_matriz()
+            mostrar_matriz(nueva_matriz)
+            break
+        else:
+            print("\033[94m"+"Ingrese una opcion valida: ")
+        
+def ingresar_nueva_matriz():
+    nueva_matriz = []
+    print("Ingrese las 6 filas de la matriz de ADN. Cada fila debe contener 6 bases nitrogenadas (A, T, C, G):")
+
+    for i in range(6):
+        while True:
+            fila = input(f"Fila {i + 1}: ").upper()
+            if len(fila) == 6 and all(base in 'ATCG' for base in fila):
+                nueva_matriz.append(fila)
+                break
+            else:
+                print("Entrada inválida. Asegúrese de que la fila tenga 6 caracteres y solo contenga A, T, C, o G.")
+    return nueva_matriz
+
 
 def salir_menu():
     print("\033[94m"+"Saliendo del menu")
@@ -129,13 +204,10 @@ def salir_menu():
 def limpiar_terminal():
     os.system('cls')
 
-
-
 def mostrar_matriz(matriz):
     print("La matriz es la siguiente:")
-    for i in matriz:
-        print(i)
-    
+    for fila in matriz:
+        print(' '.join(fila))
 
 
     # mutante_vertical = ["AGATCA", "GATTCA", "CAATAT", "GAGTTA", "ATTGCG", "CTGTTC"]
